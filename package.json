@@ -1,0 +1,17 @@
+{
+  "name": "bex_realty",
+  "version": "1.0.0",
+  "description": "Find the instructions to complete this assessment below. This should not take more than two hours of your time.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^27.0.6"
+  },
+  "dependencies": {
+    "@hapi/boom": "^9.1.3"
+  }
+}
