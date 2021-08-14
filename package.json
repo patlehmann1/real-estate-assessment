@@ -1,7 +1,7 @@
 {
   "name": "real-estate-assessment",
   "version": "1.0.0",
-  "description": "Find the instructions to complete this assessment below. This should not take more than two hours of your time.",
+  "description": "This is a coding challenge, August 2021.",
   "main": "index.js",
   "scripts": {
     "test": "jest"
