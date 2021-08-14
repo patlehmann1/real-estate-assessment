@@ -1,4 +1,4 @@
-# BEX Realty Full Stack Engineer Assessment
+# Real Estate Company Full Stack Engineer Assessment
 
 Find the instructions to complete this assessment below. This should not take more than two hours of your time.
 
