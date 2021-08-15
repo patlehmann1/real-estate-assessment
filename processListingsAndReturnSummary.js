@@ -7,14 +7,14 @@ const numberToDollarAmount = number => Intl.NumberFormat('en-US', {
   currency: 'USD'
 }).format(number);
 
-const getTotalValues = processedPropertyListings => processedPropertyListings.reduce((acc, listing) => {
+const getTotalValues = processedPropertyListings => processedPropertyListings.reduce((acc, { price, squareFeet }) => {
 
-  if (listing.price && listing.squareFeet) {
-    acc.pricePerSqFt += (listing.price / listing.squareFeet);
+  if (price && squareFeet) {
+    acc.pricePerSqFt += (price / squareFeet);
   } 
   
-  if (listing.price) {
-    acc.price += listing.price 
+  if (price) {
+    acc.price += price 
   };
 
   return acc;
@@ -22,17 +22,18 @@ const getTotalValues = processedPropertyListings => processedPropertyListings.re
 
 const processPropertyListings = (stateAbbreviation, minBaths) => {
 
-  const filteredAndTransformedListings = propertyListings.reduce((acc, listing) => {
+  const filteredAndTransformedListings = propertyListings.reduce((acc, { id, street, locality, 
+    administrativeAreaLevel1, postalCode, price, squareFeet, beds, baths }) => {
 
-    if (listing.administrativeAreaLevel1 === stateAbbreviation && listing.baths >= minBaths) {
+    if (administrativeAreaLevel1 === stateAbbreviation && baths >= minBaths) {
       const transformedListing = {
-          id: listing.id,
-          addressLine1: listing.street,
-          addressLine2: `${listing.locality}, ${listing.administrativeAreaLevel1} ${listing.postalCode}`,
-          price: listing.price,
-          squareFeet: listing.squareFeet,
-          beds: listing.beds,
-          baths: listing.baths
+          id,
+          addressLine1: street,
+          addressLine2: `${locality}, ${administrativeAreaLevel1} ${postalCode}`,
+          price,
+          squareFeet,
+          beds,
+          baths
         };
 
         acc.push(transformedListing);
@@ -49,10 +50,6 @@ module.exports = (stateAbbreviation, minBaths) => {
   if (!['CA', 'FL', 'NY'].includes(stateAbbreviation)) {
     throw badRequest('stateAbbreviation must be one of CA, FL, or NY.');
   };
-
-  if (typeof minBaths !== 'number') {
-    throw badRequest('minBaths must be a number');
-  } 
 
   const processedPropertyListings = processPropertyListings(stateAbbreviation, minBaths);
   const totalValues = getTotalValues(processedPropertyListings);
