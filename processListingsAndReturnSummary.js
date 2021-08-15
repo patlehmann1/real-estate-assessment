@@ -7,22 +7,18 @@ const numberToDollarAmount = number => Intl.NumberFormat('en-US', {
   currency: 'USD'
 }).format(number);
 
-const getPricePerSqFtTotal = processedPropertyListings => processedPropertyListings.reduce((acc, listing) => {
+const getTotalValues = processedPropertyListings => processedPropertyListings.reduce((acc, listing) => {
 
   if (listing.price && listing.squareFeet) {
-    acc += (listing.price / listing.squareFeet);
-  };
-
-  return acc;
-}, 0);
-
-const getPriceTotal = processedPropertyListings => processedPropertyListings.reduce((acc, listing) => {
-  if (listing.price) {
-  acc += listing.price;
-  };
+    acc.pricePerSqFt += (listing.price / listing.squareFeet);
+  } 
   
+  if (listing.price) {
+    acc.price += listing.price 
+  };
+
   return acc;
-}, 0);
+}, { price: 0, pricePerSqFt: 0});
 
 const processPropertyListings = (stateAbbreviation, minBaths) => {
 
@@ -40,8 +36,6 @@ const processPropertyListings = (stateAbbreviation, minBaths) => {
         };
 
         acc.push(transformedListing);
-
-        return acc;
     };
 
     return acc;
@@ -52,16 +46,19 @@ const processPropertyListings = (stateAbbreviation, minBaths) => {
 
 module.exports = (stateAbbreviation, minBaths) => {
 
-  if (!['CA', 'FL', 'NY'].includes(stateAbbreviation)){
+  if (!['CA', 'FL', 'NY'].includes(stateAbbreviation)) {
     throw badRequest('stateAbbreviation must be one of CA, FL, or NY.');
   };
 
+  if (typeof minBaths !== 'number') {
+    throw badRequest('minBaths must be a number');
+  } 
+
   const processedPropertyListings = processPropertyListings(stateAbbreviation, minBaths);
-  const priceTotal = getPriceTotal(processedPropertyListings);
-  const pricePerSqFtTotal = getPricePerSqFtTotal(processedPropertyListings);
+  const totalValues = getTotalValues(processedPropertyListings);
 
   console.log('RESULTS:');
   console.log(processedPropertyListings);
-  console.log(`Average Price: ${numberToDollarAmount(priceTotal / processedPropertyListings.length)}\nAverage Price per sqft: ${numberToDollarAmount(pricePerSqFtTotal / processedPropertyListings.length)}`);
+  console.log(`Average Price: ${numberToDollarAmount(totalValues.price / processedPropertyListings.length)}\nAverage Price per sqft: ${numberToDollarAmount(totalValues.pricePerSqFt / processedPropertyListings.length)}`);
 };
 
